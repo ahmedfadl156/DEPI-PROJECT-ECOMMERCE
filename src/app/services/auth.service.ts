@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
+
 export interface User {
+  id: string;
   username: string;
   email: string;
 }
@@ -13,18 +15,25 @@ export interface AuthResponse {
   message?: string;
 }
 
+export interface SignupData {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
-
+export class AuthService {
   private apiUrl = 'http://localhost:3000/api/users';
+  
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-
-  getallUsers(){
-    return this.http.get<any>(`${this.apiUrl}/all`)
-  }
 
   constructor(private http: HttpClient) {
     this.loadUserFromLocalStorage();
@@ -40,30 +49,17 @@ export class UserService {
     }
   }
 
-
-  deleteUser(id: string){
-    return this.http.delete<any>(`${this.apiUrl}/${id}`);
-  }
-
-  register(user: {username: string, email: string, password: string}): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, user)
+  signup(userData: SignupData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData)
       .pipe(
-        tap(response => {
-          if (response && response.token) {
-            this.handleAuthentication(response);
-          }
-        })
+        tap(response => this.handleAuthentication(response))
       );
   }
 
-  login(credentials: {email: string, password: string}): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials)
+  login(loginData: LoginData): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, loginData)
       .pipe(
-        tap(response => {
-          if (response && response.token) {
-            this.handleAuthentication(response);
-          }
-        })
+        tap(response => this.handleAuthentication(response))
       );
   }
 
@@ -74,6 +70,7 @@ export class UserService {
     localStorage.setItem('currentUser', JSON.stringify(user));
     
     this.currentUserSubject.next(user);
+    
   }
 
   logout(): void {
@@ -81,10 +78,15 @@ export class UserService {
     localStorage.removeItem('currentUser');
     
     this.currentUserSubject.next(null);
+    
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.getToken();
   }
 
   getCurrentUser(): User | null {

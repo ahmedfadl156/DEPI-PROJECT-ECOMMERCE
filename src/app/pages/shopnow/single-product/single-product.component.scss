@@ -14,6 +14,7 @@
     width: 100%;
     height: auto;
     min-height: 400px; 
+    max-height: 500px;
   }
   
   .thumbnail-container {
@@ -84,7 +85,15 @@ select{
     width: 100%;
 }
 
+.quantity-left{
+  letter-spacing: 1px;
+  color: orange;
+}
 
+.inStock{
+  color: rgb(118, 195, 3);
+  font-size: 20px;
+}
 // Add To Cart //
 .cartBtn {
   width: 170px;
