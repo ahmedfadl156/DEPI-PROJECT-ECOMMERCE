@@ -5,6 +5,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 export interface User {
   username: string;
   email: string;
+  role: string;
 }
 
 export interface AuthResponse {
@@ -54,6 +55,10 @@ export class UserService {
           }
         })
       );
+  }
+
+  add(user: {username: string , email: string , password: string , role: string}):Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/add` , user);
   }
 
   login(credentials: {email: string, password: string}): Observable<AuthResponse> {

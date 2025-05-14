@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
-
+import { Router } from '@angular/router';
 
 export interface User {
   id: string;
   username: string;
   email: string;
+  role: string;
 }
 
 export interface AuthResponse {
@@ -35,17 +36,23 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
+  private isLoggedInSubject = new BehaviorSubject<boolean>(false);
+  private userRoleSubject = new BehaviorSubject<string>('');
+
+  constructor(private http: HttpClient, private router: Router) {
     this.loadUserFromLocalStorage();
   }
 
   private loadUserFromLocalStorage(): void {
     const userJson = localStorage.getItem('currentUser');
     const token = localStorage.getItem('token');
+    const role = localStorage.getItem('userRole');
     
     if (userJson && token) {
       const user = JSON.parse(userJson);
       this.currentUserSubject.next(user);
+      this.isLoggedInSubject.next(true);
+      this.userRoleSubject.next(role || '');
     }
   }
 
@@ -68,17 +75,22 @@ export class AuthService {
     
     localStorage.setItem('token', token);
     localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('userRole', user.role);
     
     this.currentUserSubject.next(user);
-    
+    this.isLoggedInSubject.next(true);
+    this.userRoleSubject.next(user.role);
   }
 
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
+    localStorage.removeItem('userRole');
     
     this.currentUserSubject.next(null);
-    
+    this.isLoggedInSubject.next(false);
+    this.userRoleSubject.next('');
+    this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
@@ -86,10 +98,29 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    return this.isLoggedInSubject.value;
+  }
+
+  Admin(): boolean {
+    const user = this.getCurrentUser();
+    return user?.role === 'admin';
   }
 
   getCurrentUser(): User | null {
     return this.currentUserSubject.value;
+  }
+
+  getUserRole(): string {
+    return this.userRoleSubject.value;
+  }
+
+  setLoginStatus(status: boolean, role: string = '') {
+    this.isLoggedInSubject.next(status);
+    this.userRoleSubject.next(role);
+    if (status) {
+      localStorage.setItem('userRole', role);
+    } else {
+      localStorage.removeItem('userRole');
+    }
   }
 }

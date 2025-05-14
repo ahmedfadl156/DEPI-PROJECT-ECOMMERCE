@@ -93,6 +93,27 @@ table{
     }
   }
   
+.stockStatus{
+  padding-top: 20px;
+}
+
+  .instock{
+    background-color: rgb(138, 225, 8);
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    padding-top: 10px 5px;
+    border-radius: 10px;
+  }
+
+  .outstock{
+    background-color: red;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    padding-top: 10px 5px;
+    border-radius: 10px;
+  }
 
 .add-product-btn {
     padding: 10px 20px;

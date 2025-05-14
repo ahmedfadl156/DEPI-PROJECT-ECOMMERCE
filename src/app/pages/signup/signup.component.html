@@ -27,6 +27,7 @@
             type="text"
             name="name"
             id="name"
+            autocomplete="off"
             [(ngModel)]="name"
           />
 
@@ -37,6 +38,7 @@
             type="email"
             name="email"
             id="email-input"
+            autocomplete="off"
             [(ngModel)]="email"
           />
       
@@ -49,6 +51,7 @@
             type="text"
             name="password"
             id="password-input"
+            autocomplete="off"
             [(ngModel)]="password"
           />
           <button class="submit" type="submit" [disabled]="loading">

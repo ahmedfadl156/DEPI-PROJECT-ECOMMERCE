@@ -43,15 +43,22 @@ export class LoginComponent implements OnInit {
 
     this.userService.login(credentials).subscribe({
       next: (response) => {
-
+        const user = response.user;
         localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        localStorage.setItem('user', JSON.stringify(user));
         this.loading = false;
         this.showFullPageLoader = true;
         setTimeout(() => {
+          if(user.role === 'admin'){
+            this.navbar.show();
+            this.footer.show();
+            this.router.navigate(['/dashboard']);
+          }
+          else{
           this.navbar.show();
           this.footer.show();
           this.router.navigate(['/']);
+          }
         }, 5000);
       },
       error: (error) => {

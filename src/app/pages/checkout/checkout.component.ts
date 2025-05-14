@@ -25,6 +25,7 @@ interface Order {
   subtotal: number;
   shippingFee: number;
   total: number;
+  totalafterdisc: number;
 }
 
 @Component({
@@ -45,7 +46,11 @@ export class CheckoutComponent {
   order?: Order;
   orderButton = false;
   isProcessing = false;
-
+  cuponApplied = false;
+  code = ["FinishedDepiProject2025","AhmedFadl2025"];
+  codeinputtext: string = '';
+  discountAmount: number = 100;
+  appliedCupon!: string;
   constructor(
     private cart: cartService,
     private productsService: ProductsService
@@ -58,7 +63,12 @@ export class CheckoutComponent {
   }
 
   onCheckout() {
-    return this.cart.getCartTotal();
+    const total = this.cart.getCartTotal();
+    const aftercupon = total - this.discountAmount;
+    return {
+      total: total,
+      aftercupon: aftercupon
+    };
   }
 
   getItemTotal(item: CartItem): number {
@@ -120,9 +130,10 @@ export class CheckoutComponent {
       },
       payment: 'Cash On Delivery',
       items: this.cartitems,
-      subtotal: this.onCheckout(),
+      subtotal: this.onCheckout().total,
       shippingFee: 0,
-      total: this.onCheckout()
+      total: this.onCheckout().total,
+      totalafterdisc: this.onCheckout().aftercupon
     };
 
     setTimeout(() => {
@@ -199,6 +210,33 @@ export class CheckoutComponent {
         text: "Failed to generate invoice. Please try again.",
         icon: "error"
       });
+    }
+  }
+
+  cuponCode(){
+    if(this.codeinputtext === ""){
+      Swal.fire({
+        title: "Error",
+        text: "Please Enter A Cupon",
+        icon: "error"
+      })
+    }
+    else if(this.codeinputtext === this.code[0] || this.codeinputtext === this.code[1]){
+      this.cuponApplied = true;
+      this.appliedCupon = this.codeinputtext;
+      Swal.fire({
+        title: "Succes",
+        text: "Cupon Applied Succesfully",
+        icon: "success"
+      })
+      this.codeinputtext = "";
+    }
+    else{
+      Swal.fire({
+        title: "Error",
+        text: "Invalid Cupon",
+        icon: "error"
+      })
     }
   }
 }

@@ -10,6 +10,7 @@ import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { AdminGuard } from './services/guard.guard';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -22,6 +23,6 @@ export const routes: Routes = [
   { path: 'checkout' , component: CheckoutComponent},
   { path: 'login' , component: LoginComponent},
   { path: 'signup' , component: SignupComponent},
-  { path: 'dashboard' , component: DashboardComponent},
+  { path: 'dashboard' , component: DashboardComponent , canActivate: [AdminGuard]},
   { path: '**', redirectTo: '' },
 ];

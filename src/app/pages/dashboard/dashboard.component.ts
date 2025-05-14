@@ -67,7 +67,7 @@ export class DashboardComponent {
     this.newProductForm = this.fb.group({
       name: ['', Validators.required],
       description: ['', Validators.required],
-      quantity: [1, [Validators.required, Validators.min(1)]],
+      quantity: [0, [Validators.required, Validators.min(0)]],
       reviews: [0, [Validators.required, Validators.min(0)]],
       rating: [0, [Validators.required, Validators.min(0), Validators.max(5)]],
       category: ['', Validators.required],
@@ -79,15 +79,15 @@ export class DashboardComponent {
 
   initEditForm() {
     this.editProductForm = this.fb.group({
-      name: [this.productToEdit.name, Validators.required],
-      description: [this.productToEdit.description, Validators.required],
-      quantity: [this.productToEdit.quantity, [Validators.required, Validators.min(1)]],
-      reviews: [this.productToEdit.reviews, [Validators.required, Validators.min(0)]],
-      rating: [this.productToEdit.rating, [Validators.required, Validators.min(0), Validators.max(5)]],
-      category: [this.productToEdit.category, Validators.required],
-      price: [this.productToEdit.price, [Validators.required, Validators.min(0)]],
-      brand: [this.productToEdit.brand, Validators.required],
-      image: [this.productToEdit.image, Validators.required]
+      name: [this.productToEdit.name],
+      description: [this.productToEdit.description],
+      quantity: [this.productToEdit.quantity , Validators.min(0)],
+      reviews: [this.productToEdit.reviews],
+      rating: [this.productToEdit.rating],
+      category: [this.productToEdit.category],
+      price: [this.productToEdit.price],
+      brand: [this.productToEdit.brand],
+      image: [this.productToEdit.image]
     });
   }
 
@@ -281,7 +281,7 @@ export class DashboardComponent {
     
     const newUser = this.newUserForm.value;
 
-    this.Users.register(newUser).subscribe({
+    this.Users.add(newUser).subscribe({
       next: (response: any) => {
         console.log('User added successfully:', response);
         this.submitLoading = false;

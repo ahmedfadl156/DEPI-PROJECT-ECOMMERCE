@@ -60,17 +60,24 @@
                 <td>{{`${item.name} * (${item.quantity})`}}</td>
                 <td>{{getItemTotal(item) | currency}}</td>
             </tr>
-            <tr>
-                <td>Subtotal</td>
-                <td>{{onCheckout() | currency}}</td>
+            <tr *ngIf="cuponApplied">
+                <td>Cupon Code</td>
+                <td class="aftercupon">{{appliedCupon}}</td>
             </tr>
             <tr>
-                <td></td>
-                <td class="fw-bold bg-danger">{{onCheckout() | currency}}</td>
+                <td>Total</td>
+                <td>{{onCheckout().total| currency}}</td>
+            </tr>
+            <tr *ngIf="cuponApplied">
+                <td>Total After Discount</td>
+                <td class="fw-bold bg-danger text-white">{{onCheckout().aftercupon | currency}}</td>
             </tr>
         </tbody>
     </table>
-
+    <div class="cupon-code-input position-relative w-25 mt-5">
+        <input type="text" class="w-100 code-input" [(ngModel)]="codeinputtext" placeholder="Enter A Cupon Code">
+        <button class="position-absolute apply-cupon-btn" (click)="cuponCode()">Apply Cupon</button>
+    </div>
     <div class="note mt-5">
         <div class="note-statement">
             <p>Cash on delivery.  Please contact us if you require assistance or wish to make alternate arrangements.</p>
@@ -145,9 +152,21 @@
                 <h4>Shipping</h4>
                 <p class="lead">{{(order?.shippingFee | currency)}}</p>
             </div>
+            <div class="cupon d-flex justify-content-between mb-3" *ngIf="cuponApplied">
+                <h4>Applied Cupon</h4>
+                <p class="lead">{{appliedCupon}}</p>
+            </div>
             <div class="total d-flex justify-content-between mb-5">
                 <h4>Total</h4>
                 <p class="fw-bold fs-4">{{(order?.total | currency) || 'N/A'}}</p>
+            </div>
+            <div class="Discount d-flex justify-content-between mb-5" *ngIf="cuponApplied">
+                <h4>Discount</h4>
+                <p class="fw-bold fs-4">{{onCheckout().aftercupon | currency}}</p>
+            </div>
+            <div class="totalafter d-flex justify-content-between mb-5" *ngIf="cuponApplied">
+                <h4>Total After Discount</h4>
+                <p class="fw-bold fs-4">{{(order?.totalafterdisc | currency)}}</p>
             </div>
         </div>
         <div class="download-bill d-flex justify-content-between align-items-center py-4">

@@ -75,7 +75,17 @@ export class ProductsService {
   updateProductsQuantities(products: {id: string, quantity: number}[]): Observable<any> {
     console.log('Updating products quantities:', products);
     
-    const updateObservables = products.map(product => 
+    const uniqueProducts = products.reduce((acc, current) => {
+      const existingProduct = acc.find(item => item.id === current.id);
+      if (existingProduct) {
+        existingProduct.quantity += current.quantity;
+      } else {
+        acc.push({...current});
+      }
+      return acc;
+    }, [] as {id: string, quantity: number}[]);
+    
+    const updateObservables = uniqueProducts.map(product => 
       this.updateProductQuantity(product.id, product.quantity)
     );
     
@@ -93,14 +103,15 @@ export class ProductsService {
         updateObservable.subscribe({
           next: (result) => {
             results.push({
-              productId: products[index].id,
+              productId: uniqueProducts[index].id,
               success: true,
               result
             });
           },
           error: (error) => {
+            console.error('Error updating product:', error);
             results.push({
-              productId: products[index].id,
+              productId: uniqueProducts[index].id,
               success: false,
               error: error.message
             });
