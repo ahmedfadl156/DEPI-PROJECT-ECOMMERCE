@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { cartService } from './cart.service';
 
 export interface User {
   id: string;
@@ -39,7 +40,7 @@ export class AuthService {
   private isLoggedInSubject = new BehaviorSubject<boolean>(false);
   private userRoleSubject = new BehaviorSubject<string>('');
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router , private cart: cartService) {
     this.loadUserFromLocalStorage();
   }
 
@@ -86,11 +87,11 @@ export class AuthService {
     localStorage.removeItem('token');
     localStorage.removeItem('currentUser');
     localStorage.removeItem('userRole');
-    
     this.currentUserSubject.next(null);
     this.isLoggedInSubject.next(false);
     this.userRoleSubject.next('');
     this.router.navigate(['/login']);
+    this.cart.clearCart();
   }
 
   getToken(): string | null {

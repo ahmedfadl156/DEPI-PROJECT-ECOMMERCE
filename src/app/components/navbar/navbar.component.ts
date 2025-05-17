@@ -1,11 +1,12 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { cartService } from '../../services/cart.service';
 import { NavbarService } from './navbar.service';
 import { NgIf, AsyncPipe } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-navbar',
@@ -35,6 +36,12 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.userService.logout();
+    Swal.fire({
+      title: 'Success',
+      text: 'Logged Out Successfully!',
+      icon: 'success',
+      confirmButtonText: 'Okay'
+    })
   }
 }
 

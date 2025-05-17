@@ -103,7 +103,6 @@ export class DashboardComponent {
   fetchProducts(){
     this.Products.getAllProducts().subscribe({
       next: (data) => {
-        console.log(data)
         this.products = Array.isArray(data) ? data : [];
       },
       error: (error) => {
@@ -115,7 +114,6 @@ export class DashboardComponent {
   fetchUsers() {
     this.Users.getallUsers().subscribe({
       next: (data) => {
-        console.log(data)
         this.users = Array.isArray(data) ? data: [];
       },
       error: (error) => {

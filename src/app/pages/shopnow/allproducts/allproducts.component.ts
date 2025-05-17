@@ -58,7 +58,6 @@ export class AllproductsComponent implements OnInit {
     this.isLoading = true;
     this.productsService.getAllProducts().subscribe({
       next: (data) => {
-        console.log('Fetched Products:', data);
         this.products = Array.isArray(data) ? data : [];
         this.products.sort((a, b) => {
           const dateA = new Date(a.createdAt || 0).getTime();

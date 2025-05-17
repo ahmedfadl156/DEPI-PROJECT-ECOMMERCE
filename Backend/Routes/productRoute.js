@@ -14,6 +14,7 @@ router.post('/add', async (req, res) => {
             name: req.body.name,
             category: req.body.category,
             image: req.body.image,
+            thumbnailImage: req.body.thumbnailImage,
             description: req.body.description,
             reviews: req.body.reviews,
             brand: req.body.brand,
@@ -127,6 +128,7 @@ router.put('/:id', async (req, res) => {
         product.reviews = req.body.reviews;
         product.rating = req.body.rating;
         product.image = req.body.image;
+        product.thumbnailImage = req.body.thumbnailImage;
         product.description = req.body.description;
         product.price = req.body.price;
         

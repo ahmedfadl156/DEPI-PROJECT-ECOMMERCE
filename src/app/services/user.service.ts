@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { cartService } from './cart.service';
 
 export interface User {
   username: string;
@@ -27,7 +28,7 @@ export class UserService {
     return this.http.get<any>(`${this.apiUrl}/all`)
   }
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient , private cart: cartService) {
     this.loadUserFromLocalStorage();
   }
 
@@ -86,6 +87,8 @@ export class UserService {
     localStorage.removeItem('currentUser');
     
     this.currentUserSubject.next(null);
+    this.cart.clearCart();
+    
   }
 
   isLoggedIn(): boolean {
